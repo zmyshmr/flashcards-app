@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <!-- iPhone等のスマホに最適化 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>単語帳 - FlashCards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Noto+Sans+JP:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- ヘッダー -->
+  <header class="app-header">
+    <h1>FlashCards</h1>
+  </header>
+
+  <!-- メインコンテンツ領域 -->
+  <main class="app-main">
+    
+    <!-- 画面1: 登録＆一覧モード -->
+    <section id="view-list" class="view active">
+      <div class="register-container">
+        <h2>単語を登録</h2>
+        <form id="register-form">
+          <div class="input-group">
+            <input type="text" id="input-front" placeholder="表面（問題）" required>
+          </div>
+          <div class="input-group">
+            <input type="text" id="input-back" placeholder="裏面（答え）" required>
+          </div>
+          <button type="submit" class="btn-primary">追加する</button>
+        </form>
+
+        <hr class="divider">
+        
+        <h3 class="sub-title">一括登録（CSV / TSV）</h3>
+        <p class="hint-text">「問題,答え」の形式で複数行ペーストできます</p>
+        <form id="bulk-register-form">
+          <div class="input-group">
+            <textarea id="input-bulk" placeholder="Apple,りんご&#10;Banana,バナナ" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn-secondary">一括で追加する</button>
+        </form>
+      </div>
+
+      <div class="list-container">
+        <h2>登録済み単語 (<span id="word-count">0</span>)</h2>
+        <div id="overall-stats" class="overall-stats" style="display: none;">
+          <!-- JSで全体の正答率を表示 -->
+        </div>
+        <ul id="word-list" class="word-list">
+          <!-- JSでリストを生成 -->
+        </ul>
+      </div>
+    </section>
+
+    <!-- 画面2: 学習モード -->
+    <section id="view-study" class="view">
+      <div class="study-container">
+        <div id="study-empty" class="hidden">
+          <p>単語が登録されていません。<br>一覧画面から登録してください。</p>
+        </div>
+        
+        <div id="study-area" class="study-area">
+          <p class="study-progress"><span id="study-current">1</span> / <span id="study-total">0</span></p>
+          
+          <!-- フリップカード -->
+          <div class="scene scene--card">
+            <div id="study-card" class="card">
+              <div class="card__face card__face--front">
+                <div class="card-content" id="card-front-text">問題</div>
+                <div class="tap-hint">タップで裏返す</div>
+              </div>
+              <div class="card__face card__face--back">
+                <div class="card-content" id="card-back-text">答え</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ナビゲーション -->
+          <div class="study-controls" id="study-nav-controls">
+            <button id="btn-prev" class="btn-icon">◀ 戻る</button>
+            <button id="btn-next" class="btn-icon">次へ ▶</button>
+          </div>
+
+          <!-- 判定ボタン (裏面表示時のみ) -->
+          <div class="study-controls hidden" id="study-assess-controls">
+            <button id="btn-incorrect" class="btn-assess btn-incorrect">❌ 忘れてた</button>
+            <button id="btn-correct" class="btn-assess btn-correct">⭕️ 覚えてた</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ボトムナビゲーション -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-target="view-list">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">登録・一覧</span>
+    </button>
+    <button class="nav-item" data-target="view-study">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label">学習する</span>
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>

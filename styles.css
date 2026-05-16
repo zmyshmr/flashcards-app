@@ -1,0 +1,463 @@
+/* CSS Variables - ダークテーマと洗練されたカラーパレット */
+:root {
+  --bg-color: #121212;
+  --surface-color: #1E1E1E;
+  --surface-variant: #2C2C2C;
+  --primary-color: #BB86FC;
+  --primary-variant: #3700B3;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B3B3B3;
+  --error-color: #CF6679;
+  
+  --font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  --border-radius: 12px;
+  --transition-speed: 0.3s;
+  
+  --nav-height: 70px;
+  --header-height: 60px;
+}
+
+/* Reset & Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  /* iPhoneのセーフエリア対応も意識 */
+  height: 100dvh; 
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Typography */
+h1, h2 {
+  font-weight: 600;
+}
+
+/* Header */
+.app-header {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface-color);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.app-header h1 {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  letter-spacing: 1px;
+}
+
+/* Main Layout */
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  padding-bottom: var(--nav-height); /* Navが被らないように */
+}
+
+.view {
+  display: none;
+  padding: 20px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* List & Register View */
+.register-container {
+  background-color: var(--surface-color);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.register-container h2 {
+  font-size: 1rem;
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+}
+
+.input-group {
+  margin-bottom: 12px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--surface-variant);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color var(--transition-speed);
+}
+
+input[type="text"]:focus, textarea:focus {
+  border-color: var(--primary-color);
+}
+
+textarea {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--surface-variant);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  resize: vertical;
+  transition: border-color var(--transition-speed);
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--surface-variant);
+  margin: 20px 0;
+}
+
+.sub-title {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.hint-text {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+.btn-primary, .btn-secondary {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-speed), transform 0.1s;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #000;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  background-color: #a067e8;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  margin-top: 8px;
+}
+
+.btn-secondary:active {
+  transform: scale(0.98);
+  background-color: rgba(187, 134, 252, 0.1);
+}
+
+/* List container */
+.list-container h2 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+}
+
+.overall-stats {
+  background-color: var(--surface-variant);
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+
+.overall-stats .rate {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.word-list {
+  list-style: none;
+}
+
+.word-item {
+  background-color: var(--surface-color);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid var(--primary-color);
+}
+
+.word-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.word-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-badge {
+  font-size: 0.75rem;
+  background-color: var(--surface-variant);
+  color: var(--text-secondary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.history-dots {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  margin-left: 4px;
+}
+
+.word-front {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.word-back {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.btn-delete {
+  background: none;
+  border: none;
+  color: var(--error-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* Study View (Flip Card) */
+.study-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding-top: 20px;
+}
+
+.study-area {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.study-progress {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.scene {
+  width: 100%;
+  height: 350px;
+  perspective: 1000px;
+  margin-bottom: 30px;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+  position: relative;
+}
+
+.card.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.card__face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--border-radius);
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.card__face--front {
+  background: linear-gradient(135deg, var(--surface-color) 0%, var(--surface-variant) 100%);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.card__face--back {
+  background: linear-gradient(135deg, var(--primary-variant) 0%, var(--primary-color) 100%);
+  transform: rotateY(180deg);
+  color: #fff;
+}
+
+.card-content {
+  font-size: 2rem;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.tap-hint {
+  position: absolute;
+  bottom: 20px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.4; }
+}
+
+.study-controls {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+}
+
+.btn-icon {
+  flex: 1;
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  border: 1px solid var(--surface-variant);
+  padding: 16px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+}
+
+.btn-icon:active {
+  background-color: var(--surface-variant);
+}
+
+/* Assessment Buttons */
+.btn-assess {
+  flex: 1;
+  padding: 16px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.1s, filter var(--transition-speed);
+}
+
+.btn-assess:active {
+  transform: scale(0.95);
+}
+
+.btn-correct {
+  background-color: #4CAF50; /* Green */
+  color: #fff;
+}
+
+.btn-incorrect {
+  background-color: #F44336; /* Red */
+  color: #fff;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  background-color: var(--surface-color);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid var(--surface-variant);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  /* iPhone Home Indicator対応 */
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 20;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  height: 100%;
+  transition: color var(--transition-speed);
+}
+
+.nav-item.active {
+  color: var(--primary-color);
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.nav-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
