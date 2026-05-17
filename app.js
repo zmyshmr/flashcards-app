@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // === 状態管理 ===
   let words = [];
   let currentStudyIndex = 0;
+  let studyOrder = [];
 
   // === 初期化処理 ===
   init();
@@ -267,7 +268,13 @@ document.addEventListener('DOMContentLoaded', () => {
     studyEmpty.classList.add('hidden');
     studyArea.classList.remove('hidden');
     
-    // シャッフル機能などはPhase2以降。今は登録順（逆順でもOKだが今回は古い順）で表示
+    // ランダムに出題するため、インデックス配列を作成してシャッフルする
+    studyOrder = Array.from({length: words.length}, (_, i) => i);
+    for (let i = studyOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [studyOrder[i], studyOrder[j]] = [studyOrder[j], studyOrder[i]];
+    }
+
     currentStudyIndex = 0;
     updateStudyCard();
   }
@@ -280,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // アニメーションを待ってからテキスト書き換え
     setTimeout(() => {
-      const currentWord = words[currentStudyIndex];
+      const currentWord = words[studyOrder[currentStudyIndex]];
       cardFrontText.textContent = currentWord.front;
       cardBackText.textContent = currentWord.back;
       
@@ -310,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function assessWord(result) {
-    const currentWord = words[currentStudyIndex];
+    const currentWord = words[studyOrder[currentStudyIndex]];
     if (!currentWord.history) currentWord.history = []; // 後方互換性
     
     currentWord.history.push({
