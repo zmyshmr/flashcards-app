@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const wordCountEl = document.getElementById('word-count');
   const overallStatsEl = document.getElementById('overall-stats');
   
+  const deckSelector = document.getElementById('deck-selector');
+  const btnAddDeck = document.getElementById('btn-add-deck');
+  const btnEditDeck = document.getElementById('btn-edit-deck');
+  const btnDeleteDeck = document.getElementById('btn-delete-deck');
+  
   const navItems = document.querySelectorAll('.nav-item');
   const views = document.querySelectorAll('.view');
   
@@ -30,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnIncorrect = document.getElementById('btn-incorrect');
 
   // === 状態管理 ===
+  let decks = [];
+  let currentDeckId = null;
   let words = [];
   let currentStudyIndex = 0;
   let studyOrder = [];
@@ -39,28 +46,150 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function init() {
     loadData();
+    updateDeckSelector();
     renderList();
     setupEventListeners();
   }
 
   // === データ管理 (LocalStorage) ===
   function loadData() {
-    const saved = localStorage.getItem('flashcards_data');
-    if (saved) {
+    // 1. デッキ情報のロード
+    const savedDecks = localStorage.getItem('flashcards_decks');
+    if (savedDecks) {
       try {
-        words = JSON.parse(saved);
+        decks = JSON.parse(savedDecks);
+      } catch (e) {
+        decks = [];
+      }
+    }
+
+    // マイグレーション: 古い flashcards_data が存在し、decksが空の場合
+    const oldData = localStorage.getItem('flashcards_data');
+    if (oldData && decks.length === 0) {
+      const defaultDeckId = 'deck_' + Date.now();
+      decks = [{ id: defaultDeckId, name: 'デフォルト単語帳', createdAt: new Date().toISOString() }];
+      localStorage.setItem('flashcards_decks', JSON.stringify(decks));
+      
+      // 単語データを新しいキーに移動
+      localStorage.setItem('flashcards_words_' + defaultDeckId, oldData);
+      localStorage.removeItem('flashcards_data');
+    }
+
+    // デッキが1つもない場合はデフォルトを作成
+    if (decks.length === 0) {
+      const defaultDeckId = 'deck_' + Date.now();
+      decks = [{ id: defaultDeckId, name: '最初の単語帳', createdAt: new Date().toISOString() }];
+      localStorage.setItem('flashcards_decks', JSON.stringify(decks));
+    }
+
+    // 2. アクティブなデッキの決定
+    const activeDeck = localStorage.getItem('flashcards_active_deck');
+    if (activeDeck && decks.some(d => d.id === activeDeck)) {
+      currentDeckId = activeDeck;
+    } else {
+      currentDeckId = decks[0].id;
+      localStorage.setItem('flashcards_active_deck', currentDeckId);
+    }
+
+    // 3. アクティブデッキの単語をロード
+    loadWordsForCurrentDeck();
+  }
+
+  function loadWordsForCurrentDeck() {
+    const savedWords = localStorage.getItem('flashcards_words_' + currentDeckId);
+    if (savedWords) {
+      try {
+        words = JSON.parse(savedWords);
       } catch (e) {
         words = [];
       }
+    } else {
+      words = [];
     }
   }
 
   function saveData() {
-    localStorage.setItem('flashcards_data', JSON.stringify(words));
+    localStorage.setItem('flashcards_words_' + currentDeckId, JSON.stringify(words));
+  }
+  
+  function saveDecks() {
+    localStorage.setItem('flashcards_decks', JSON.stringify(decks));
+  }
+
+  // === デッキ操作 ===
+  function updateDeckSelector() {
+    deckSelector.innerHTML = '';
+    decks.forEach(deck => {
+      const option = document.createElement('option');
+      option.value = deck.id;
+      option.textContent = deck.name;
+      if (deck.id === currentDeckId) {
+        option.selected = true;
+      }
+      deckSelector.appendChild(option);
+    });
+  }
+
+  function switchDeck(deckId) {
+    currentDeckId = deckId;
+    localStorage.setItem('flashcards_active_deck', currentDeckId);
+    loadWordsForCurrentDeck();
+    renderList();
+    
+    // 学習モード中ならリセット
+    if (document.getElementById('view-study').classList.contains('active')) {
+      initStudySession();
+    }
   }
 
   // === イベントリスナー設定 ===
   function setupEventListeners() {
+    // デッキ操作
+    deckSelector.addEventListener('change', (e) => {
+      switchDeck(e.target.value);
+    });
+
+    btnAddDeck.addEventListener('click', () => {
+      const name = prompt('新しい単語帳の名前を入力してください:');
+      if (name && name.trim()) {
+        const newDeckId = 'deck_' + Date.now();
+        decks.push({ id: newDeckId, name: name.trim(), createdAt: new Date().toISOString() });
+        saveDecks();
+        updateDeckSelector();
+        switchDeck(newDeckId);
+      }
+    });
+
+    btnEditDeck.addEventListener('click', () => {
+      const currentDeck = decks.find(d => d.id === currentDeckId);
+      if (!currentDeck) return;
+      const newName = prompt('単語帳の名前を変更:', currentDeck.name);
+      if (newName && newName.trim() && newName.trim() !== currentDeck.name) {
+        currentDeck.name = newName.trim();
+        saveDecks();
+        updateDeckSelector();
+      }
+    });
+
+    btnDeleteDeck.addEventListener('click', () => {
+      if (decks.length <= 1) {
+        alert('最後の単語帳は削除できません。');
+        return;
+      }
+      const currentDeck = decks.find(d => d.id === currentDeckId);
+      if (confirm(`単語帳「${currentDeck.name}」を削除しますか？\n登録されている単語もすべて消去されます。`)) {
+        // ローカルストレージから単語データを削除
+        localStorage.removeItem('flashcards_words_' + currentDeckId);
+        // デッキリストから削除
+        decks = decks.filter(d => d.id !== currentDeckId);
+        saveDecks();
+        
+        // 別のデッキに切り替え
+        switchDeck(decks[0].id);
+        updateDeckSelector();
+      }
+    });
+
     // 画面切り替え (Bottom Navigation)
     navItems.forEach(item => {
       item.addEventListener('click', (e) => {

@@ -18,7 +18,16 @@
 <body>
   <!-- ヘッダー -->
   <header class="app-header">
-    <h1>FlashCards</h1>
+    <div class="deck-controls">
+      <select id="deck-selector" class="deck-select">
+        <!-- JSでデッキ一覧を生成 -->
+      </select>
+      <div class="deck-actions">
+        <button id="btn-add-deck" class="btn-deck-action" title="新しい単語帳を作成">➕</button>
+        <button id="btn-edit-deck" class="btn-deck-action" title="単語帳の名前を変更">✎</button>
+        <button id="btn-delete-deck" class="btn-deck-action" title="単語帳を削除">🗑️</button>
+      </div>
+    </div>
   </header>
 
   <!-- メインコンテンツ領域 -->
